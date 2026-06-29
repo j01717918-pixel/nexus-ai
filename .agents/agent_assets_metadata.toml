@@ -1,0 +1,19 @@
+uploads = []
+
+[[generated]]
+id = "0DbnnWpLdJMNBiICj0Fbi"
+uri = "file://artifacts/chatbot/public/hero-bg.png"
+type = "image"
+title = "Nexus AI Hero Header"
+
+[[generated]]
+id = "z2Spk8MvbAwfCOtRV5Jx0"
+uri = "file://artifacts/chatbot/public/features-graphic.png"
+type = "image"
+title = "Nexus Features Graphic"
+
+[[outputs]]
+id = "W6Rl4RNUA5g5hOWCW9_Vu"
+uri = "file://nexus-ai.tar.gz"
+type = "unspecified"
+title = "Nexus AI — Full Project Source"

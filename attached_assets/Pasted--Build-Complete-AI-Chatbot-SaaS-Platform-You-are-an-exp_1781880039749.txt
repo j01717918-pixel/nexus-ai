@@ -1,0 +1,291 @@
+# Build Complete AI Chatbot SaaS Platform
+
+You are an expert Full-Stack Software Engineer, AI Engineer, UI/UX Designer, Database Architect, Security Engineer, and DevOps Engineer.
+
+Your task is to build a complete production-ready AI Chatbot Platform similar to ChatGPT.
+
+## Project Goal
+
+Create a modern AI chatbot web application where users can:
+
+* Sign up
+* Log in
+* Manage their profile
+* Create multiple conversations
+* Chat with AI in real time
+* View conversation history
+* Delete conversations
+* Search conversations
+* Customize settings
+* Use dark/light mode
+* Rate AI responses
+* Access an admin dashboard
+* View analytics
+
+The application must look professional and modern, similar to ChatGPT, Claude, Gemini, or Perplexity.
+
+---
+
+## Tech Stack
+
+Frontend:
+
+* Next.js 15+
+* TypeScript
+* Tailwind CSS
+* Shadcn UI
+* Framer Motion
+* React Query
+* Socket.io Client
+
+Backend:
+
+* Node.js
+* Express.js
+* TypeScript
+* Socket.io
+* JWT Authentication
+* bcrypt
+
+Database:
+
+* Supabase PostgreSQL
+* Prisma ORM
+
+AI:
+
+* Google Gemini API
+
+Deployment:
+
+* Replit Deployment Ready
+* Vercel Compatible
+
+---
+
+## UI Requirements
+
+Create a premium modern interface.
+
+Pages:
+
+### Landing Page
+
+Include:
+
+* Hero Section
+* Features Section
+* How It Works
+* Testimonials
+* Pricing Section
+* FAQ
+* Footer
+
+---
+
+### Authentication
+
+Pages:
+
+* Login
+* Register
+* Forgot Password
+
+Features:
+
+* Validation
+* Error handling
+* JWT authentication
+
+---
+
+### Dashboard
+
+Layout similar to ChatGPT.
+
+Left Sidebar:
+
+* New Chat Button
+* Conversation History
+* Search Chats
+* User Settings
+
+Main Area:
+
+* Chat Messages
+* AI Responses
+* Typing Indicator
+* Streaming Responses
+
+Bottom Area:
+
+* Chat Input
+* Send Button
+* File Upload Button
+
+---
+
+## AI Features
+
+Implement:
+
+* Gemini API integration
+* Conversation memory
+* Chat history
+* Streaming responses
+* Markdown support
+* Code syntax highlighting
+* Copy response button
+* Regenerate response button
+
+---
+
+## Database Design
+
+Create tables:
+
+Users
+Conversations
+Messages
+UserSettings
+Feedback
+Analytics
+
+Include:
+
+* Proper relations
+* Indexes
+* Constraints
+
+---
+
+## Authentication
+
+Implement:
+
+* JWT Authentication
+* Password Hashing using bcrypt
+* Protected Routes
+* Role-based Access Control
+
+Roles:
+
+* User
+* Admin
+
+---
+
+## Real-Time Features
+
+Use Socket.io.
+
+Implement:
+
+* Real-time messaging
+* User online status
+* Typing indicators
+* Live updates
+
+---
+
+## Admin Dashboard
+
+Admin can:
+
+* View users
+* View conversations
+* View analytics
+* View API usage
+* Monitor activity
+
+---
+
+## Security
+
+Implement:
+
+* Helmet
+* CORS
+* Rate Limiting
+* Input Validation
+* XSS Protection
+* CSRF Protection
+* SQL Injection Protection
+
+---
+
+## Performance
+
+Implement:
+
+* Lazy Loading
+* Pagination
+* Optimized Queries
+* Caching
+* Error Boundaries
+
+---
+
+## Folder Structure
+
+Generate a professional enterprise-level folder structure.
+
+Include:
+
+* Frontend
+* Backend
+* Components
+* Services
+* API Layer
+* Database Layer
+* Authentication Layer
+* Socket Layer
+
+---
+
+## Environment Variables
+
+Generate:
+
+.env.example
+
+Including:
+
+DATABASE_URL=
+JWT_SECRET=
+GEMINI_API_KEY=
+NEXT_PUBLIC_API_URL=
+
+---
+
+## Deliverables
+
+Generate:
+
+1. Complete folder structure
+2. Complete frontend
+3. Complete backend
+4. Database schema
+5. Prisma schema
+6. API routes
+7. Authentication system
+8. Socket.io setup
+9. Gemini integration
+10. Admin dashboard
+11. Documentation
+12. Deployment instructions
+
+Build the entire application file-by-file.
+
+Whenever creating a file:
+
+* Show the exact file path
+* Explain the purpose
+* Generate complete code
+* Ensure the code is production-ready
+
+Do not use mock data.
+
+Use real database integration, real authentication, and real Gemini API integration.
+
+The final result should be a fully functional AI chatbot SaaS platform that can be deployed directly from Replit.
