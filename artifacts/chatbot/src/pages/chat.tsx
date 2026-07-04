@@ -141,19 +141,21 @@ export default function Chat() {
         
         for (const line of lines) {
           if (line.startsWith("data: ")) {
+            let json: { content?: string; done?: boolean; error?: string };
             try {
-              const json = JSON.parse(line.slice(6));
-              if (json.done) {
-                break;
-              }
-              if (json.content) {
-                setStreamingContent(prev => prev + json.content);
-              }
-              if (json.error) {
-                throw new Error(json.error);
-              }
+              json = JSON.parse(line.slice(6));
             } catch (e) {
               console.error("Error parsing SSE JSON", e);
+              continue;
+            }
+            if (json.error) {
+              throw new Error(json.error);
+            }
+            if (json.done) {
+              break;
+            }
+            if (json.content) {
+              setStreamingContent(prev => prev + json.content);
             }
           }
         }
@@ -161,7 +163,11 @@ export default function Chat() {
     } catch (err) {
       console.error("Streaming error", err);
       hasError = true;
-      setError("Failed to get response. Please try again.");
+      setError(
+        err instanceof Error && err.message !== "Failed to send message"
+          ? err.message
+          : "Failed to get response. Please try again.",
+      );
     } finally {
       setIsStreaming(false);
       setStreamingContent("");

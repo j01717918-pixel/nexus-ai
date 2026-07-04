@@ -307,7 +307,15 @@ router.post("/:id/messages", async (req, res) => {
 
     res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
   } catch (err) {
-    res.write(`data: ${JSON.stringify({ error: "AI generation failed" })}\n\n`);
+    console.error("AI generation failed:", err);
+    const errMsg = err instanceof Error ? err.message : String(err);
+    let message = "AI generation failed";
+    if (errMsg.includes("401") || errMsg.includes("invalid authentication")) {
+      message =
+        "Invalid Gemini API key. Get a free key at https://aistudio.google.com/apikey, " +
+        "set GEMINI_API_KEY in .env, and restart the API server.";
+    }
+    res.write(`data: ${JSON.stringify({ error: message })}\n\n`);
   }
 
   return res.end();
