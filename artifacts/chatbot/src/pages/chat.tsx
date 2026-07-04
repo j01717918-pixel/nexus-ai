@@ -2,8 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, useParams } from "wouter";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { ArrowUp, Bot, Sparkles, Code, Zap, FileText, Menu, AlertCircle } from "lucide-react";
+import { Bot, Sparkles, Code, Zap, FileText, Menu, AlertCircle } from "lucide-react";
+import { ChatInput } from "@/components/chat/chat-input";
 import { cn } from "@/lib/utils";
 import { 
   useGetConversation, 
@@ -41,7 +41,6 @@ export default function Chat() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const { isSignedIn, getToken } = useAuth();
 
@@ -67,14 +66,6 @@ export default function Chat() {
     setIsMobileMenuOpen(false);
   }, [conversationId]);
 
-  // Auto-resize textarea
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
-    }
-  }, [input]);
-
   // Scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -86,10 +77,6 @@ export default function Chat() {
     
     setInput("");
     setError(null);
-    
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-    }
 
     let targetConvId = conversationId;
 
@@ -185,13 +172,6 @@ export default function Chat() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
   const userAvatar = user?.firstName?.[0] || user?.emailAddresses[0]?.emailAddress[0] || "U";
 
   return (
@@ -223,22 +203,32 @@ export default function Chat() {
         <div className="flex-1 overflow-y-auto px-4 md:px-8 pt-6 pb-36 scroll-smooth">
           <div className="max-w-3xl mx-auto space-y-8">
             {!conversationId && !optimisticMessage ? (
-              <div className="h-full flex flex-col items-center justify-center text-center mt-8 md:mt-20 fade-in slide-in-from-bottom-4 duration-700 animate-in">
-                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-8 shadow-sm border border-primary/10">
-                  <Bot className="h-10 w-10 text-primary" />
+              <div className="h-full flex flex-col items-center justify-center text-center mt-8 md:mt-16 fade-in slide-in-from-bottom-4 duration-700 animate-in">
+                <div className="relative mb-8">
+                  <div className="absolute inset-0 rounded-3xl bg-primary/20 blur-2xl scale-110" />
+                  <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-primary/25 via-primary/10 to-transparent flex items-center justify-center shadow-lg border border-primary/15">
+                    <Bot className="h-10 w-10 text-primary" />
+                  </div>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">How can I help you today?</h1>
-                <p className="text-muted-foreground text-lg mb-10 max-w-md">I can write code, analyze data, brainstorm ideas, and help you think.</p>
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3 bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
+                  How can I help you today?
+                </h1>
+                <p className="text-muted-foreground text-base md:text-lg mb-10 max-w-md leading-relaxed">
+                  I can write code, analyze data, brainstorm ideas, and help you think.
+                  <span className="block mt-1 text-sm opacity-70">Try typing or use the mic to speak.</span>
+                </p>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl">
                   {SUGGESTED_PROMPTS.map((prompt, i) => (
                     <button
                       key={i}
                       onClick={() => handleSend(prompt.text)}
-                      className="flex flex-col text-left p-4 rounded-xl border border-border bg-card/50 hover:bg-card hover:border-primary/30 transition-all duration-200 group shadow-sm hover:shadow-md"
+                      className="flex items-start gap-3 text-left p-4 rounded-2xl border border-border/70 bg-card/60 hover:bg-card hover:border-primary/25 transition-all duration-200 group shadow-sm hover:shadow-md hover:-translate-y-0.5"
                     >
-                      <prompt.icon className="h-5 w-5 text-muted-foreground group-hover:text-primary mb-3 transition-colors" />
-                      <span className="text-sm font-medium">{prompt.text}</span>
+                      <div className="shrink-0 w-9 h-9 rounded-xl bg-muted/80 group-hover:bg-primary/10 flex items-center justify-center transition-colors">
+                        <prompt.icon className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      </div>
+                      <span className="text-sm font-medium pt-1.5">{prompt.text}</span>
                     </button>
                   ))}
                 </div>
@@ -323,33 +313,15 @@ export default function Chat() {
         </div>
         
         {/* Floating Input Area */}
-        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-background via-background/95 to-transparent pt-10 pb-6 px-4 md:px-8 z-20">
-          <div className="max-w-3xl mx-auto relative rounded-2xl border border-border/50 bg-card/80 backdrop-blur-md shadow-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/30 transition-all duration-300">
-            <Textarea
-              ref={textareaRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Message Nexus AI..."
-              className="min-h-[60px] w-full resize-none border-0 bg-transparent py-4 pl-5 pr-14 focus-visible:ring-0 shadow-none text-base sm:text-[15px]"
-              rows={1}
-            />
-            <Button 
-              size="icon" 
-              className={cn(
-                "absolute right-3 bottom-3 h-9 w-9 rounded-xl transition-all duration-200",
-                (!input.trim() || isStreaming) 
-                  ? "bg-muted text-muted-foreground opacity-50 cursor-not-allowed" 
-                  : "bg-primary text-primary-foreground shadow-md hover:scale-105 active:scale-95"
-              )}
-              disabled={!input.trim() || isStreaming}
-              onClick={() => handleSend()}
-            >
-              <ArrowUp className="h-4 w-4 stroke-[2.5]" />
-            </Button>
-          </div>
-          <div className="text-center mt-3">
-            <span className="text-[11px] text-muted-foreground font-medium tracking-wide opacity-70">
+        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-background via-background/98 to-transparent pt-12 pb-5 px-4 md:px-8 z-20">
+          <ChatInput
+            value={input}
+            onChange={setInput}
+            onSend={() => handleSend()}
+            disabled={isStreaming}
+          />
+          <div className="text-center mt-2 max-w-3xl mx-auto">
+            <span className="text-[11px] text-muted-foreground/60 font-medium tracking-wide">
               Nexus AI can make mistakes. Verify important information.
             </span>
           </div>
