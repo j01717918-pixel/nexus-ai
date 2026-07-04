@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "rm -rf .pnpm-store && pnpm install",
+  "buildCommand": "pnpm --filter @workspace/chatbot run build",
+  "outputDirectory": "artifacts/chatbot/dist/public",
+  "framework": null
+}
