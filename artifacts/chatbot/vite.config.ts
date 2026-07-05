@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
@@ -12,9 +12,31 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-const basePath = process.env.BASE_PATH ?? "/";
+const envDir = path.resolve(import.meta.dirname);
 
-export default defineConfig({
+function resolveClerkPublishableKey(
+  env: Record<string, string>,
+): string | undefined {
+  return (
+    process.env.VITE_CLERK_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ||
+    env.VITE_CLERK_PUBLISHABLE_KEY ||
+    env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+  )?.trim();
+}
+
+export default defineConfig(async ({ mode }) => {
+  const env = loadEnv(mode, envDir, "");
+  const basePath = process.env.BASE_PATH ?? "/";
+
+  if (mode === "production" && !resolveClerkPublishableKey(env)) {
+    throw new Error(
+      "Missing VITE_CLERK_PUBLISHABLE_KEY (required at Vite build time). " +
+        "Set it in Vercel: Project Settings → Environment Variables (Production, Preview, Development).",
+    );
+  }
+
+  return {
   base: basePath,
   plugins: [
     react(),
@@ -60,4 +82,5 @@ export default defineConfig({
     host: "0.0.0.0",
     allowedHosts: true,
   },
+  };
 });

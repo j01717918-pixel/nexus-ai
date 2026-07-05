@@ -18,8 +18,6 @@ const clerkPubKey =
   import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ||
   import.meta.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
-console.log("CLERK KEY =", clerkPubKey);
-
 const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -35,7 +33,8 @@ function stripBase(path: string): string {
 
 if (!clerkPubKey) {
   throw new Error(
-    "Missing VITE_CLERK_PUBLISHABLE_KEY (or NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY)"
+    "Missing VITE_CLERK_PUBLISHABLE_KEY. " +
+      "Vite inlines this at build time — add it in Vercel: Project Settings → Environment Variables.",
   );
 }
 
