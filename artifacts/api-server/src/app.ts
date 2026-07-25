@@ -48,6 +48,14 @@ app.use(
   })),
 );
 
+app.get("/", (_req, res) => {
+  res.json({ status: "ok", service: "Nexus AI API Server" });
+});
+
+app.head("/", (_req, res) => {
+  res.status(200).end();
+});
+
 app.use("/api", router);
 
 export default app;
