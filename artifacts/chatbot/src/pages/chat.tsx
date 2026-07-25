@@ -44,19 +44,27 @@ export default function Chat() {
 
   const { isSignedIn, getToken } = useAuth();
 
-  const { data: conversation } = useGetConversation(conversationId!, { 
+  const { data: conversation, error: convoError } = useGetConversation(conversationId!, { 
     query: {
       queryKey: getGetConversationQueryKey(conversationId!),
       enabled: !!conversationId && !!isSignedIn,
+      retry: false,
     } 
   });
   
   const { data: messages = [] } = useListMessages(conversationId!, {
     query: {
       queryKey: getListMessagesQueryKey(conversationId!),
-      enabled: !!conversationId && !!isSignedIn,
+      enabled: !!conversationId && !!isSignedIn && !convoError,
+      retry: false,
     }
   });
+
+  useEffect(() => {
+    if (convoError) {
+      setLocation("/chat");
+    }
+  }, [convoError, setLocation]);
   
   const createConversation = useCreateConversation();
   const submitFeedback = useSubmitFeedback();
