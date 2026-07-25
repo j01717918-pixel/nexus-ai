@@ -80,6 +80,16 @@ export default defineConfig(async ({ mode }) => {
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    sourcemap: false,
+    rollupOptions: {
+      onwarn(warning, warn) {
+        // Suppress sourcemap warnings from third-party packages (e.g. Radix UI)
+        if (warning.code === "SOURCEMAP_ERROR") return;
+        if (warning.message?.includes("Can't resolve original location")) return;
+        if (warning.message?.includes("sourcemap")) return;
+        warn(warning);
+      },
+    },
   },
   server: {
     port,
