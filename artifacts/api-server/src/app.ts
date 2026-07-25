@@ -58,4 +58,19 @@ app.head("/", (_req, res) => {
 
 app.use("/api", router);
 
+app.use(
+  (
+    err: any,
+    _req: express.Request,
+    res: express.Response,
+    _next: express.NextFunction,
+  ) => {
+    logger.error(err, "Unhandled API error");
+    const status = typeof err?.status === "number" ? err.status : 500;
+    res.status(status).json({
+      error: err?.message || "Internal Server Error",
+    });
+  },
+);
+
 export default app;

@@ -3,6 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import app from "./app";
 import { validateGeminiKey } from "@workspace/integrations-gemini-ai";
+import { ensureTablesExist } from "@workspace/db";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,6 +20,8 @@ const port = Number(process.env.PORT || 8080);
 
 app.listen(port, async () => {
   console.log(`API server listening on port ${port}`);
+
+  await ensureTablesExist();
 
   const geminiError = await validateGeminiKey();
   if (geminiError) {
