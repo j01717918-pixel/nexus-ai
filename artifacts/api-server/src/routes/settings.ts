@@ -9,13 +9,7 @@ const router = Router();
 
 // GET /api/settings
 router.get("/", async (req, res) => {
-  const auth = getAuth(req);
-  console.log("Settings route auth check:", {
-    authHeader: req.headers.authorization ? "Present" : "Missing",
-    tokenPreview: req.headers.authorization ? req.headers.authorization.substring(0, 20) + "..." : null,
-    authObj: auth,
-  });
-  const { userId } = auth;
+  const { userId } = getAuth(req);
   if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
   let [settings] = await db

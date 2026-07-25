@@ -6,20 +6,32 @@ import * as schema from "./schema/index";
 
 const { Pool } = pg;
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+function sanitizeErrorMessage(message: string): string {
+  return message
+    .replace(/postgres(?:ql)?:\/\/[^@\s]+@/gi, "postgresql://[REDACTED_CREDENTIALS]@")
+    .replace(/password=[^\s;&]+/gi, "password=[REDACTED]");
 }
 
+const connectionString = process.env.DATABASE_URL?.trim();
+
 export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: connectionString || "postgresql://localhost:5432/dummy_db",
 });
 
 export const db = drizzle(pool, { schema });
 
-export async function ensureTablesExist() {
+export async function ensureTablesExist(): Promise<void> {
+  const url = process.env.DATABASE_URL?.trim();
+  if (!url) {
+    const msg =
+      "DATABASE_URL environment variable is missing or empty. Please set a valid PostgreSQL connection string in Render environment variables.";
+    console.error(`✗ ${msg}`);
+    throw new Error(msg);
+  }
+
   try {
+    await pool.query("SELECT 1");
+
     await pool.query(`
       CREATE TABLE IF NOT EXISTS "activity" (
         "id" serial PRIMARY KEY NOT NULL,
@@ -65,9 +77,12 @@ export async function ensureTablesExist() {
       CREATE INDEX IF NOT EXISTS "conversations_user_id_idx" ON "conversations" USING btree ("user_id");
       CREATE INDEX IF NOT EXISTS "feedback_message_id_idx" ON "feedback" USING btree ("message_id");
     `);
-    console.log("✓ Database tables verified/initialized");
+    console.log("✓ Database connection verified and tables initialized");
   } catch (err) {
-    console.error("⚠ Database table initialization warning:", err instanceof Error ? err.message : err);
+    const rawMsg = err instanceof Error ? err.message : String(err);
+    const safeMsg = `Database initialization failed: ${sanitizeErrorMessage(rawMsg)}`;
+    console.error(`✗ ${safeMsg}`);
+    throw new Error(safeMsg);
   }
 }
 
