@@ -22,9 +22,10 @@ export const db = drizzle(pool, { schema });
 
 export async function ensureTablesExist(): Promise<void> {
   const url = process.env.DATABASE_URL?.trim();
-  if (!url) {
+  if (!url || (!url.startsWith("postgres://") && !url.startsWith("postgresql://"))) {
     const msg =
-      "DATABASE_URL environment variable is missing or empty. Please set a valid PostgreSQL connection string in Render environment variables.";
+      "DATABASE_URL environment variable is missing or invalid (must start with postgresql:// or postgres://). " +
+      "Please set a valid PostgreSQL connection string in Render environment variables.";
     console.error(`✗ ${msg}`);
     throw new Error(msg);
   }
