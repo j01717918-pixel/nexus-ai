@@ -243,7 +243,7 @@ router.post("/:id/messages", async (req, res) => {
 
   try {
     const stream = await ai.models.generateContentStream({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       contents: history.map((m) => ({
         role: m.role === "assistant" ? "model" : "user",
         parts: [{ text: m.content }],
@@ -274,7 +274,7 @@ router.post("/:id/messages", async (req, res) => {
     if (history.length === 1) {
       try {
         const titleResponse = await ai.models.generateContent({
-          model: "gemini-2.5-flash",
+          model: "gemini-3.6-flash",
           contents: [
             {
               role: "user",
@@ -307,13 +307,15 @@ router.post("/:id/messages", async (req, res) => {
 
     res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
   } catch (err) {
-    console.error("AI generation failed:", err);
+    console.error("AI generation failed:", err instanceof Error ? err.message : String(err));
     const errMsg = err instanceof Error ? err.message : String(err);
-    let message = "AI generation failed";
-    if (errMsg.includes("401") || errMsg.includes("invalid authentication")) {
-      message =
-        "Invalid Gemini API key. Get a free key at https://aistudio.google.com/apikey, " +
-        "set GEMINI_API_KEY in .env, and restart the API server.";
+    let message = "AI generation failed. Please try again.";
+    if (errMsg.includes("401") || errMsg.includes("invalid authentication") || errMsg.includes("API_KEY_INVALID")) {
+      message = "Invalid Gemini API key. Please contact the administrator.";
+    } else if (errMsg.includes("404") || errMsg.includes("no longer available") || errMsg.includes("not found")) {
+      message = "The AI model is currently unavailable. Please try again later.";
+    } else if (errMsg.includes("429") || errMsg.includes("quota") || errMsg.includes("rate limit")) {
+      message = "AI rate limit reached. Please wait a moment and try again.";
     }
     res.write(`data: ${JSON.stringify({ error: message })}\n\n`);
   }

@@ -68,7 +68,7 @@ export async function ensureTablesExist(): Promise<void> {
         "id" serial PRIMARY KEY NOT NULL,
         "user_id" text NOT NULL,
         "theme" text DEFAULT 'system' NOT NULL,
-        "model" text DEFAULT 'gemini-2.5-flash' NOT NULL,
+        "model" text DEFAULT 'gemini-3.6-flash' NOT NULL,
         "system_prompt" text,
         "created_at" timestamp with time zone DEFAULT now() NOT NULL,
         "updated_at" timestamp with time zone DEFAULT now() NOT NULL,

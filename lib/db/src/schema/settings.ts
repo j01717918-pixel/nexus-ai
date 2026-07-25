@@ -6,7 +6,7 @@ export const userSettings = pgTable("user_settings", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull().unique(),
   theme: text("theme").notNull().default("system"),
-  model: text("model").notNull().default("gemini-2.5-flash"),
+  model: text("model").notNull().default("gemini-3.6-flash"),
   systemPrompt: text("system_prompt"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

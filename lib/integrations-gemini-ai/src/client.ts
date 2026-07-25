@@ -22,7 +22,7 @@ export const ai = new GoogleGenAI({ apiKey });
 export async function validateGeminiKey(): Promise<string | null> {
   try {
     await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       contents: [{ role: "user", parts: [{ text: "ping" }] }],
       config: { maxOutputTokens: 1 },
     });
